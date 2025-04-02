@@ -62,3 +62,12 @@ button {
 .square.blank {
   background-color: #6388ee;
 }
+
+.special-square {
+  background-color: #6388ee;
+}
+
+span {
+  font-weight: bold;
+  text-transform: uppercase;
+}
