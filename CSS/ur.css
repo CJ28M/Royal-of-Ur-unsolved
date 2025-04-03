@@ -59,13 +59,13 @@ button {
   cursor: pointer;
 }
 
-.square.blank {
+.off-board {
   background-color: #6388ee;
 }
 
-.special-square {
+/* .special-square {
   background-color: #6388ee;
-}
+} */
 
 span {
   font-weight: bold;

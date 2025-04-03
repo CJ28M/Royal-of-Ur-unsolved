@@ -4,23 +4,24 @@ document.addEventListener("DOMContentLoaded", () => {
   const playerTurnDisplay = document.getElementById("player-turn");
   const rollDiceBtn = document.getElementById("roll-dice");
   const resetGameBtn = document.getElementById("reset-game");
-  const skipTurnBtn = document.getElementById("skip-turn"); // Skip turn button
+  const skipTurnBtn = document.getElementById("skip-turn");
+  const score = { white: 0, black: 0 };
 
-  const boardSize = 24; // 3x8 board
-  let playerTurn = "white"; // Starts with white
+  const boardSize = 24;
+  let playerTurn = "white";
   let diceRoll = 0;
+  let hasRolled = false;
 
-  const rosettes = [0, 2, 10, 18, 20]; // Squares that grant extra turns
+  const rosettes = [0, 2, 10, 18, 20];
+  const specialSquares = [15, 17];
 
-  // Paths for both players
   const paths = {
     white: [12, 9, 6, 3, 0, 1, 4, 7, 10, 13, 16, 19, 20, 23, 22, 21, 18, 15],
     black: [14, 11, 8, 5, 2, 1, 4, 7, 10, 13, 16, 19, 18, 21, 22, 23, 20, 17],
   };
 
-  // Create the game board
   function createBoard() {
-    board.innerHTML = ""; // Clear board before recreating it
+    board.innerHTML = "";
     for (let i = 0; i < boardSize; i++) {
       const square = document.createElement("div");
       square.classList.add("square");
@@ -30,37 +31,63 @@ document.addEventListener("DOMContentLoaded", () => {
         square.classList.add("rosette");
       }
 
-      if ([12, 15, 14, 17].includes(i)) {
+      if ([12, 14, 17].includes(i)) {
         square.classList.add("blank");
+      }
+
+      if (specialSquares.includes(i)) {
+        square.classList.add("special-square");
+        const counter = document.createElement("span");
+        counter.classList.add("piece-counter");
+        counter.textContent = "0";
+        square.appendChild(counter);
       }
 
       board.appendChild(square);
     }
 
-    // Create pieces for each player, placed along the path
     for (let i = 0; i < 7; i++) {
-      createPiece("white", 12); // White pieces now start at square 12
-      createPiece("black", 14); // Black pieces now start at square 14
+      createPiece("white", 12);
+      createPiece("black", 14);
     }
   }
 
-  // Create pieces for the board
   function createPiece(color, position) {
     const piece = document.createElement("div");
     piece.classList.add("piece", color);
     piece.setAttribute("draggable", true);
     piece.setAttribute("data-color", color);
     document.querySelector(`[square-id="${position}"]`).appendChild(piece);
+    updatePieceCounter(position);
   }
 
-  // Roll the dice when clicked
+  function updatePieceCounter(squareId) {
+    const square = document.querySelector(`[square-id="${squareId}"]`);
+    if (specialSquares.includes(squareId)) {
+      const count = square.querySelectorAll(".piece").length;
+      square.querySelector(".piece-counter").textContent = count;
+    }
+  }
+
+  function checkWin() {
+    if (score.white >= 7) {
+      alert("White wins!");
+      resetGame();
+    } else if (score.black >= 7) {
+      alert("Black wins!");
+      resetGame();
+    }
+  }
+
   rollDiceBtn.addEventListener("click", () => {
-    diceRoll = Math.floor(Math.random() * 5); // Random roll between 0 and 4
+    if (hasRolled) return;
+    diceRoll = Math.floor(Math.random() * 4) + 1;
     diceResultDisplay.textContent = diceRoll;
-    if (diceRoll === 0) switchTurn(); // Skip turn if roll is 0
+    hasRolled = true;
+    rollDiceBtn.disabled = true;
+    if (diceRoll === 0) switchTurn();
   });
 
-  // Handle drag start for piece movement
   document.addEventListener("dragstart", (e) => {
     if (
       e.target.classList.contains("piece") &&
@@ -71,174 +98,76 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // Allow piece to be dragged over squares
   document.addEventListener("dragover", (e) => {
     e.preventDefault();
   });
 
-  // Handle the drop event for moving pieces
   document.addEventListener("drop", (e) => {
     e.preventDefault();
     const draggedPiece = document.querySelector(".dragging");
     if (!draggedPiece) return;
 
     const targetSquare = e.target.closest(".square");
-    if (!targetSquare || !isValidMove(draggedPiece, targetSquare)) return;
+    if (!targetSquare) return;
 
     const targetId = parseInt(targetSquare.getAttribute("square-id"));
+    const pieceColor = draggedPiece.getAttribute("data-color");
+    const path = paths[pieceColor];
+    const currentIdx = path.indexOf(
+      parseInt(draggedPiece.parentElement.getAttribute("square-id"))
+    );
+    const moveToIdx = currentIdx + diceRoll;
 
-    // Check if there is already a piece of the same color in the target square
-    if (
-      targetSquare.firstChild &&
-      targetSquare.firstChild.getAttribute("data-color") === playerTurn
-    ) {
-      return; // Prevent landing on another piece of the same color
-    }
+    if (moveToIdx >= path.length) return;
 
-    // Prevent capturing pieces on rosettes
-    if (rosettes.includes(targetId) && targetSquare.firstChild) {
-      return; // Do not capture a piece on a rosette
-    }
-
-    // If the piece is a black piece and lands on a white piece, return the white piece to its start position
-    if (
-      playerTurn === "black" &&
-      targetSquare.firstChild &&
-      targetSquare.firstChild.getAttribute("data-color") === "white"
-    ) {
-      const capturedPiece = targetSquare.firstChild;
-      capturedPiece.remove(); // Remove the white piece
-      returnToStart("white"); // Return the white piece to its starting position
-    }
-
-    // If there is a piece already in the target square (other than the same color), capture it and return it to the start
-    if (targetSquare.firstChild) {
-      const capturedPiece = targetSquare.firstChild;
-      const capturedColor = capturedPiece.getAttribute("data-color");
-
-      // Remove the captured piece and return it to the start
-      capturedPiece.remove();
-      returnToStart(capturedColor);
-    }
-
-    // Place the dragged piece in the target square
-    targetSquare.appendChild(draggedPiece);
-    draggedPiece.classList.remove("dragging");
-
-    // Function to return the captured piece to its starting position
-    function returnToStart(color) {
-      const startingSquareId = color === "white" ? 12 : 14; // White pieces start at square 12, black pieces start at square 14
-      const startingSquare = document.querySelector(
-        `[square-id="${startingSquareId}"]`
-      );
-
-      // Create the piece again and place it at the starting square
-      createPiece(color, startingSquareId);
-    }
-
-    // Extra Turn Conditions: Rolling a 4 or landing on a rosette, but no extra turn on capture
-    if (diceRoll !== 4 && !rosettes.includes(targetId)) {
-      switchTurn(); // Switch turn if not a 4 or rosette
-    } else {
-      if (playerTurn === "black") {
-        setTimeout(aiMove, 1000); // Allow AI to move immediately after this action
+    if (path[moveToIdx] === targetId) {
+      if (
+        (targetId === 15 && pieceColor === "white") ||
+        (targetId === 17 && pieceColor === "black")
+      ) {
+        draggedPiece.remove();
+        score[pieceColor]++;
+        checkWin();
+      } else {
+        targetSquare.appendChild(draggedPiece);
       }
+      draggedPiece.classList.remove("dragging");
+      updatePieceCounter(targetId);
+    }
+
+    hasRolled = false;
+    rollDiceBtn.disabled = false;
+    diceResultDisplay.textContent = "";
+
+    if (diceRoll !== 4 && !rosettes.includes(targetId)) {
+      switchTurn();
     }
   });
 
-  // Validate if a move is legal based on dice roll and path
-  function isValidMove(piece, targetSquare) {
-    const currentSquare = piece.parentElement;
-    const currentId = parseInt(currentSquare.getAttribute("square-id"));
-    const targetId = parseInt(targetSquare.getAttribute("square-id"));
-    const path = paths[playerTurn];
-
-    const currentIdx = path.indexOf(currentId);
-    if (currentIdx === -1) return false;
-
-    const newIdx = currentIdx + diceRoll;
-    if (newIdx >= path.length) return false; // Ensure it's within path bounds
-
-    return path[newIdx] === targetId;
+  function returnToStart(color) {
+    const startingSquareId = color === "white" ? 12 : 14;
+    createPiece(color, startingSquareId);
   }
 
-  // Switch turns between players
   function switchTurn() {
     playerTurn = playerTurn === "white" ? "black" : "white";
-    playerTurnDisplay.textContent = playerTurn;
-    if (playerTurn === "black") setTimeout(aiMove, 1000); // AI's turn after delay
+    playerTurnDisplay.innerHTML = `<b>${playerTurn}</b>`;
+    hasRolled = false;
+    rollDiceBtn.disabled = false;
   }
 
-  // AI movement logic
-  function aiMove() {
-    diceRoll = Math.floor(Math.random() * 5); // AI rolls its own dice
-    diceResultDisplay.textContent = diceRoll;
-
-    if (diceRoll === 0) {
-      switchTurn();
-      return;
-    }
-
-    const pieces = document.querySelectorAll(".piece.black");
-    for (let piece of pieces) {
-      const currentSquare = piece.parentElement;
-      const currentId = parseInt(currentSquare.getAttribute("square-id"));
-      const path = paths.black;
-      const currentIdx = path.indexOf(currentId);
-
-      if (currentIdx === -1) continue;
-
-      const newIdx = currentIdx + diceRoll;
-      if (newIdx >= path.length) continue;
-
-      const targetId = path[newIdx];
-      const targetSquare = document.querySelector(`[square-id="${targetId}"]`);
-
-      if (isValidMove(piece, targetSquare)) {
-        if (targetSquare.firstChild) {
-          targetSquare.firstChild.remove(); // Capture piece on target square
-        }
-        targetSquare.appendChild(piece);
-
-        // Extra Turn for AI: Rolling a 4 or landing on a rosette, but no extra turn on capture
-        if (diceRoll !== 4 && !rosettes.includes(targetId)) {
-          switchTurn(); // Switch turn if not a 4 or rosette
-        } else {
-          // If AI rolls a 4 or lands on a rosette, roll again
-          setTimeout(aiMove, 1000); // AI will automatically take another turn
-        }
-        break;
-      }
-    }
-  }
-
-  // Handle the Skip Turn Button
-  skipTurnBtn.addEventListener("click", () => {
-    switchTurn(); // Simply switch to the other player
-  });
-
-  // Reset the game state
-  resetGameBtn.addEventListener("click", () => {
+  function resetGame() {
     playerTurn = "white";
-    playerTurnDisplay.textContent = playerTurn;
-    createBoard(); // Recreate the board and pieces
-  });
-
-  // Function to check if a piece can be "scored"
-  function checkForScoring(piece) {
-    const currentSquare = piece.parentElement;
-    const currentId = parseInt(currentSquare.getAttribute("square-id"));
-    const path = paths[piece.getAttribute("data-color")];
-
-    if (currentId === path[path.length - 1]) {
-      // Final square in the path
-      if (diceRoll === 1) {
-        // Piece can be scored off the board
-        currentSquare.removeChild(piece);
-        // Do something like increase score or show message
-      }
-    }
+    score.white = 0;
+    score.black = 0;
+    playerTurnDisplay.innerHTML = `<b>${playerTurn}</b>`;
+    hasRolled = false;
+    rollDiceBtn.disabled = false;
+    createBoard();
   }
 
-  createBoard(); // Initialize the game board
+  skipTurnBtn.addEventListener("click", switchTurn);
+  resetGameBtn.addEventListener("click", resetGame);
+
+  createBoard();
 });
