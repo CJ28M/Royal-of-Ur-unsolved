@@ -27,10 +27,18 @@ document.addEventListener("DOMContentLoaded", () => {
       const square = document.createElement("div");
       square.classList.add("square");
       square.setAttribute("square-id", i);
+
       if (rosettes.includes(i)) square.classList.add("rosette");
       if (offBoardSquares.includes(i)) square.classList.add("off-board");
+
+      if (i === 14 || i === 12) {
+        square.classList.add("start-square");
+        square.style.backgroundColor = "#6388ee";
+      }
+
       board.appendChild(square);
     }
+
     for (let i = 0; i < 7; i++) {
       createPiece("white", 12);
       createPiece("black", 14);
@@ -106,6 +114,9 @@ document.addEventListener("DOMContentLoaded", () => {
       draggedPiece.remove();
       scores[playerTurn]++;
       updateScore();
+      switchTurn(); // Ensure turn switches when piece is removed
+      rollDiceBtn.disabled = false;
+      return; // Stop further execution
     }
 
     if (diceRoll !== 4 && !rosettes.includes(targetId)) {

@@ -4,6 +4,12 @@ body {
   background-color: #6388ee;
 }
 
+/* img {
+  display: flex;
+  flex-direction: row;
+  border: 2px solid red;
+} */
+
 .board {
   display: grid;
   grid-template-columns: repeat(3, 60px);
@@ -11,6 +17,7 @@ body {
   gap: 5px;
   margin: 20px auto;
   width: 200px;
+  z-index: 2;
 }
 
 .square {
@@ -22,10 +29,19 @@ body {
   border: 2px solid #333;
   background-color: rgb(201, 148, 69);
   position: relative;
+  z-index: 5;
 }
 
 .square.rosette {
+  background-image: url("/images/rosette.jpg");
+  background-repeat: no-repeat;
+  background-size: cover;
+  width: 100%;
+  height: 100%;
+  background-clip: content-box;
+  background-position: center;
   background-color: rgb(255, 0, 0);
+  z-index: 1;
 }
 
 .piece {
@@ -41,7 +57,7 @@ body {
 }
 
 .white {
-  background-color: white;
+  background-color: rgb(255, 255, 255);
   border: 2px solid black;
 }
 .black {
@@ -70,4 +86,29 @@ button {
 span {
   font-weight: bold;
   text-transform: uppercase;
+}
+
+::backdrop {
+  background-image: linear-gradient(
+    45deg,
+    magenta,
+    rebeccapurple,
+    dodgerblue,
+    green
+  );
+  opacity: 0.75;
+}
+
+dialog {
+  background-color: orange;
+  width: 40%;
+  text-align: -webkit-left;
+}
+
+dialog ul {
+  align-items: start;
+}
+
+img {
+  width: 100%;
 }

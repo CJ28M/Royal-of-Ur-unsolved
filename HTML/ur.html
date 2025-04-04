@@ -11,14 +11,68 @@
 
 <body>
   <h1>Royal Game of Ur</h1>
+
+
+  <dialog>
+    <p>The Royal Game of Ur dates back over 4600 years to the city of Ur in ancient Mesopotamia. Many different rules
+      were probably played since then, but the Finkel ruleset is the most popular today.
+
+    <ul>
+      <li>Goal: Score all your pieces before your opponent!</li>
+      <li>Roll Dice: Players take turns rolling the game's unique dice.</li>
+      <li>Move: Select a piece to move by the number of tiles you rolled.</li>
+      <li>Capture: Land on a piece to capture it, sending it back to the start.</li>
+      <li>Rosettes: The rosette tiles grant safety and an additional roll!</li>
+    </ul>
+
+    <h3>Rule 1 Game Setup</h3>
+    <ol>
+      <li>Clear the game baord.</li>
+      <li>players start with seven piece each.</li>
+    </ol>
+
+    <h3>Rule 2 Roll the Dice</h3>
+    <p>The unique tetrahedral dice used for the Royal Game of Ur are read by counting the number of die with a marked
+      corner facing upwards after rolling.</p>
+
+    <h3>Rule 3 Move your Pieces</h3>
+    <p>After rolling, select one of your pieces to move by the number of tiles that you rolled. One player moves their
+      pieces along the path shown below, and the other player follows a vertically mirrored path. Your turn can only be
+      skipped if you have no available moves. Otherwise, you must move a piece!</p>
+
+    <h3>Rule 4 Capture Pieces</h3>
+    <p>You can capture your opponent's pieces by moving your pieces on top of their pieces! Capturing your opponent's
+      pieces is a great way to slow the progress of your opponent. Beware though, under the Finkel ruleset, the rosette
+      tiles are safe tiles! This means that you cannot capture pieces on rosettes.</p>
+
+    <h3>Rule 5 Rosette Tiles</h3>
+    <p>The rosette tiles are the most important tiles on the board of the Royal Game of Ur! As a symbol of the goddess
+      Ishtar, they provide benefits to players who land upon them. Under the rules proposed by Irving Finkel, landing on
+      a rosette tile gives you the following benefits:</p>
+
+    <h3>Rule 6 Score your Pieces</h3>
+    <p>Winning requires you to score all your pieces! You can score pieces by moving them off the board at the end of
+      your path. You need an exact roll to take a piece off the board. For example, to score a piece from the final
+      rosette tile, you would need to roll exactly a one.</p>
+
+
+    </p>
+    <img src="/images/master ur.jpg" alt="board-path">
+    <button autofocus>Close</button>
+
+  </dialog>
+  <button>How to play Royal game of Ur</button>
+
+
   <p id="info-display">Player Turn: <span id="player-turn">White</span></p>
+
 
 
   <div class="board" id="game-board"></div>
 
   <div class="controls">
     <button id="roll-dice">Roll Dice</button>
-    <p>Dice Roll: <span id="dice-result">0</span></p>
+    <p><b>Dice Roll: </b><span id="dice-result">0</span></p>
   </div>
   <button id="reset-game">Reset Game</button>
   <button id="skip-turn">Skip Turn</button>
@@ -26,6 +80,7 @@
 
 
   <script src="/JS/ur3.js"></script>
+  <script src="/JS/urrules.js"></script>
 
 
 </body>
