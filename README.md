@@ -7,7 +7,6 @@ The Royal Game of Ur requires no special setup of pieces, so the setup for games
 
 [X]1.Clear the game board.
 [X]2.Players start with seven pieces each.
-[ ]3.Roll the dice to decide the starting player. Higher roll wins!
 
 [x]Rule 2 - Roll the Dice
 [x]The unique tetrahedral dice used for the Royal Game of Ur are read by counting the number of die with a marked corner facing upwards after rolling.
@@ -15,7 +14,7 @@ The Royal Game of Ur requires no special setup of pieces, so the setup for games
 [X]Rule 3 - Move your Pieces
 After rolling, select one of your pieces to move by the number of tiles that you rolled.
 
-[ ]One player moves their pieces along the path shown below, and the other player follows a vertically mirrored path. Your turn can only be skipped if you have no available moves. Otherwise, you must move a piece!
+[x]One player moves their pieces along the path shown below, and the other player follows a vertically mirrored path. Your turn can only be skipped if you have no available moves. Otherwise, you must move a piece!
 
 images > "master-ur"
 
@@ -24,22 +23,22 @@ images > "master-ur"
 [x]Capturing your opponent's pieces is a great way to slow the progress of your opponent. Beware though, under the Finkel ruleset, the rosette tiles are safe tiles!
 [x]This means that you cannot capture pieces on rosettes.
 
-[ ]Rule 5 - Rosette Tiles (orange)
+[x]Rule 5 - Rosette Tiles (orange)
 [X]The rosette tiles are the most important tiles on the board of the Royal Game of Ur! As a symbol of the goddess Ishtar, they provide benefits to players who land upon them. Under the rules proposed by Irving Finkel, landing on a rosette tile gives you the following benefits:
 
     [X]Landing on a rosette grants an extra roll of the dice.
         [x]Pieces on rosette tiles are safe from capture.
 
-[ ]Rule 6 - Score your Pieces!
-[ ]Winning requires you to score all your pieces! You can score pieces by moving them off the board at the end of your path.
+[x]Rule 6 - Score your Pieces!
+[x]Winning requires you to score all your pieces! You can score pieces by moving them off the board at the end of your path.
 
     [ ]You need an exact roll to take a piece off the board. For example, to score a piece from the final rosette tile, you would need to roll exactly a one.
 
 [x] Get the white/black color to be captured and return to start square.
 [x] Get the reset button to work
-[ ] button to show rules
+[x] button to show rules
 [x] show who's turn it is
-[ ] show a better gameboard style
+[x] show a better gameboard style
 
 Bonus:
 

@@ -1,0 +1,15 @@
+LOOM:
+
+https://www.loom.com/share/137291ad5f6e4f06b02d7780d5c9c4c1?sid=d32eb693-a3f4-4ff1-83c7-ea7a77ec7fd7
+
+https://www.loom.com/share/137291ad5f6e4f06b02d7780d5c9c4c1?start_download=true
+
+
+
+GITHUB:
+
+https://github.com/CJ28M/Royal-of-Ur-unsolved
+
+SSH:
+
+git@github.com:CJ28M/Royal-of-Ur-unsolved.git
